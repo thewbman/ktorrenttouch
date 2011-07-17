@@ -1,5 +1,7 @@
 
-debug = false;
+KTorrentTouch: {};
+
+debug = true;
 
 enyo.kind({
 	name: "KTorrentTouch.main",
@@ -12,22 +14,42 @@ enyo.kind({
 	},
 	components: [
 		{kind: "AppMenu", components: [
+			{caption: "About", onclick: "openAbout"},
 			{caption: "Preferences", onclick: "openPreferences"}
 		]},
 		
-		/*{name: "header", kind: "Toolbar", content: "KTorrentTouch Header", className: "header2", onclick: "headerClick"},*/
-		/*
-		{flex: 1, kind: "Pane", className: "pane", onSelectView: "viewSelected", components: [
-			{kind: "kttHostsList", onHostSelected: "gotHostSelected"},
-			{kind: "kttTorrentsList", onTorrentSelected: "gotTorrentSelected", onTorrentDetailsUpdate: "gotTorrentDetailsUpdate"},
-			{kind: "kttTorrentDetails"},
-			{kind: "kttAddHost", lazy: true}
-		]}
-		*/
+		{name: "aboutPopup", kind: "Popup", scrim: true, components: [
+			{content: "KTorrentTouch", style: "text-align: center; font-size: larger;"},
+			{content: "<hr />", allowHtml: true},
+			{name: "aboutPopupText", content: "KTorrentTouch is an app for controlling a KTorrent program.  You should already have a KTorrent program setup and running on your computer for this app to work.   The torrents are downloaded to the computer and not to this device.  ", style: "text-align: center; font-size: smaller;"},
+			{content: "<hr />", allowHtml: true},
+			{content: '<a href="http://code.google.com/p/ktorrenttouch/">App homepage</a>', allowHtml: true, style: "text-align: center; font-size: smaller;"},
+			{content: "<hr />", allowHtml: true},
+			{content: '<a href="http://ktorrent.org/">KTorrent homepage</a>', allowHtml: true, style: "text-align: center; font-size: smaller;"},
+			{content: "<hr />", allowHtml: true},
+			{kind: "Button", caption: "OK", onclick:"closeAboutPopup"}
+		]},
+		
+		{name: "preferencesPopup", kind: "Popup", scrim: true, showKeyboardWhenOpening: true, onBeforeOpen: "beforeOpenPreferencesPopup", components: [
+			{content: "KTorrentTouch", style: "text-align: center; font-size: larger;"},
+			{content: "<hr />", allowHtml: true},
+			{kind: "HFlexBox", components: [
+				{content: 'Allow annonymous developer feedback using <a href="http://metrix.webosroundup.com/privacy">Metrix</a>', allowHtml: true, style: "font-size: smaller;", flex: 1},
+				{name: "metrixToggle", kind: "ToggleButton"},
+			]},
+			{content: "<hr />", allowHtml: true},
+			{kind: "HFlexBox", components: [
+				{content: "Debug mode", allowHtml: true, style: "font-size: smaller;", flex: 1},
+				{name: "debugToggle", kind: "ToggleButton"},
+			]},
+			{content: "<hr />", allowHtml: true},
+			{kind: "Button", caption: "OK", onclick:"closePreferencesPopup"}
+		]},
+		
 		{flex: 1, kind: "Pane", className: "pane", onSelectView: "viewSelected", components: [
 			{name: "slidingPane", kind: "SlidingPane", flex: 1, wideWidth: this.phonePixels, onChange: "slidingChanged", components: [	
 				{name: "left", dragAnywhere: false, width: "33%", components: [
-					{kind: "kttHostsList", onHostSelected: "gotHostSelected", onPreferences: "openPreferences"},
+					{kind: "kttHostsList", onHostSelected: "gotHostSelected", onPreferences: "openPreferences", onOpenAboutPopup: "openAbout", onSavePreferences: "savePreferences"},
 				]},
 				{name: "middle", dragAnywhere: false, width: "33%", components: [
 					{kind: "kttTorrentsList", onTorrentSelected: "gotTorrentSelected", onTorrentDetailsUpdate: "gotTorrentDetailsUpdate", onDisconnected: "gotDisconnected"},
@@ -40,11 +62,43 @@ enyo.kind({
 		]}
 	],
 	
+	openAbout: function() {
+		if(debug) this.log("openAbout");
+		
+		this.$.aboutPopup.openAtCenter();
+	},
+	closeAboutPopup: function() {
+		if(debug) this.log("closeAboutPopup");
+		
+		this.$.aboutPopup.close();
+	},
 	openPreferences: function() {
 		if(debug) this.log("openPreferences");
 		
-		this.currentMode = "preferences";
-		this.$.pane.selectViewByName("kttPreferences");
+		this.$.preferencesPopup.openAtCenter();
+	},
+	beforeOpenPreferencesPopup: function() {
+		if(debug) this.log("beforeOpenPreferencesPopup");
+		
+		this.$.metrixToggle.setState(KTorrentTouch.prefsCookie.allowMetrix);
+		this.$.debugToggle.setState(KTorrentTouch.prefsCookie.debug);
+	},
+	closePreferencesPopup: function() {
+		if(debug) this.log("closePreferencesPopup");
+		
+		this.$.preferencesPopup.close();
+		
+		KTorrentTouch.prefsCookie.allowMetrix = this.$.metrixToggle.getState();
+		KTorrentTouch.prefsCookie.debug = this.$.debugToggle.getState();
+		
+		this.savePreferences();
+	},
+	savePreferences: function() {
+		if(debug) this.log("savePreferences");
+		
+		debug = KTorrentTouch.prefsCookie.debug;
+		
+		enyo.setCookie("KTorrentTouch-prefs", enyo.json.stringify(KTorrentTouch.prefsCookie));
 	},
 	headerClick: function() {
 		if(debug) this.log("got header click");
@@ -121,12 +175,6 @@ enyo.kind({
 		this.$.pane.selectViewByName("slidingPane");
 	},
 	
-	openAppMenuHandler: function() {
-		this.$.appMenu.open();
-	},
-	closeAppMenuHandler: function() {
-		this.$.appMenu.close();
-	},
 	backHandler: function(inSender, e) {
 		if(debug) this.log("backHandler");
 		/*
@@ -178,7 +226,9 @@ enyo.kind({ name: "kttHostsList",
 	className: "kttHostsListWrapper",
 	events: {
 		onHostSelected: "",
-		onPreferences: ""
+		onPreferences: "",
+		onOpenAboutPopup: "",
+		onSavePreferences: "",
 	},
 	
 	selectedRow: -1,
@@ -204,7 +254,7 @@ enyo.kind({ name: "kttHostsList",
 		/*{kind: "MenuButtonHeader", content: "Hosts", onclick: "revealTop"},*/
 		{kind: "Scroller", autoHorizontal: false, horizontal: false, autoVertical: true, flex: 1, components: [
 			/*{kind: "RowGroup", caption: "Hosts", flex: 1, components: [*/
-				{name: "list", kind: "VirtualRepeater", className: "hostsList", flex: 1, onGetItem: "getItem", components: [
+				{name: "list", kind: "VirtualRepeater", className: "hostsList", flex: 1, onSetupRow: "getItem", components: [
 					{kind: "Divider"},
 					{name: "hostItem", kind: "SwipeableItem", onConfirm: "removeItem", confirmCaption: "Delete", components: [
 						{kind: "HFlexBox", components: [
@@ -228,8 +278,30 @@ enyo.kind({ name: "kttHostsList",
 	],
 
 	create: function() {
-		if(debug) this.log("creating hosts list");
+		if(debug) this.log("create");
 		this.inherited(arguments);
+		
+		KTorrentTouch.Metrix = new Metrix();
+		
+		var prefsCookieString = enyo.getCookie("KTorrentTouch-prefs");
+		
+		if(prefsCookieString) {
+			if(debug) this.log("we have preferences");
+			KTorrentTouch.prefsCookie = enyo.json.parse(prefsCookieString);
+			
+			debug = KTorrentTouch.prefsCookie.debug;
+			
+			if(KTorrentTouch.prefsCookie.allowMetrix) setTimeout(enyo.bind(this,"submitMetrix"),500);
+			
+		} else {
+			if(debug) this.log("we don't have any preferences");
+			KTorrentTouch.prefsCookie = defaultCookie();
+			
+			setTimeout(enyo.bind(this,"doOpenAboutPopup",500));
+		}
+		
+		this.doSavePreferences();
+		
 		
 		this.hostsList = [];
 		
@@ -237,14 +309,24 @@ enyo.kind({ name: "kttHostsList",
 		var myHostsStorage = enyo.getCookie("KTorrentTouch-hosts");
 		
 		if(myHostsStorage) {
-			if(debug) this.log("we have hosts: "+myHostsStorage);
-			this.hostsList = enyo.json.from(myHostsStorage);
+			//if(debug) this.log("we have hosts: "+myHostsStorage);
+			if(debug) this.log("we have hosts");
+			this.hostsList = enyo.json.parse(myHostsStorage);
 		} else {
 			if(debug) this.log("we don't have any saved hosts");
 			//this.hostsList.push({hostname: "192.168.1.105", port: 8052, username: "ktorrent", password: "ktorrent"});
 		}
 		
 		this.$.list.render();
+	},
+	
+	submitMetrix: function() {
+		if(debug) this.log("submitMetrix");
+		
+		KTorrentTouch.Metrix.postDeviceData();
+		
+		KTorrentTouch.Metrix.checkBulletinBoard(1, false);
+		
 	},
 	
 	gotDisconnected: function() {
@@ -326,17 +408,36 @@ enyo.kind({ name: "kttHostsList",
 	},
 	
 	doAddHostPopup: function() {
-		this.$.hostnameInput.setValue("");
-		this.$.portInput.setValue("");
-		this.$.usernameInput.setValue("");
-		this.$.passwordInput.setValue("");
+		//this.$.hostnameInput.setValue("");
+		//this.$.portInput.setValue("");
+		//this.$.usernameInput.setValue("");
+		//this.$.passwordInput.setValue("");
+	
+		enyo.keyboard.setManualMode(true);
+		enyo.keyboard.show();
 		
 		this.$.addPopup.openAtCenter();
+		this.$.hostnameInput.forceFocus();
 	},
 	doAddHost: function() {
 		this.hostsList.push({hostname: this.$.hostnameInput.getValue(), port: this.$.portInput.getValue(), username: this.$.usernameInput.getValue(), password: this.$.passwordInput.getValue()});
 		
 		this.$.addPopup.close();
+		
+		this.$.hostnameInput.setValue("");
+		this.$.portInput.setValue("");
+		this.$.usernameInput.setValue("");
+		this.$.passwordInput.setValue("");
+		
+		this.$.hostnameInput.forceBlur();
+		this.$.portInput.forceBlur();
+		this.$.usernameInput.forceBlur();
+		this.$.passwordInput.forceBlur();
+		
+		document.activeElement.blur();
+	
+		enyo.keyboard.hide();
+		enyo.keyboard.setManualMode(false);
 		
 		this.refreshList();
 		
@@ -350,8 +451,8 @@ enyo.kind({ name: "kttHostsList",
 	},
 	
 	doSaveHosts: function() {
-		//localStorage["KTorrentTouch.hosts"] = enyo.json.to(this.hostsList);
-		enyo.setCookie("KTorrentTouch-hosts", enyo.json.to(this.hostsList));
+		//localStorage["KTorrentTouch.hosts"] = enyo.json.stringify(this.hostsList);
+		enyo.setCookie("KTorrentTouch-hosts", enyo.json.stringify(this.hostsList));
 	},
 
 });
@@ -389,16 +490,16 @@ enyo.kind({ name: "kttTorrentsList",
 		{name: "getTorrents", kind: "WebService", handleAs: "text", onSuccess: "torrentsResponse", onFailure: "torrentsFail"},
 		{name: "addTorrentService", kind: "WebService", handleAs: "text", onSuccess: "addResponse", onFailure: "addFail"},
 		
-		{name: "addPopup", kind: "Popup", scrim: true, dismissWithClick: true, dismissWithEscape: true, components: [
+		{name: "addPopup", kind: "Popup", scrim: true, showKeyboardWhenOpening: true, dismissWithClick: true, dismissWithEscape: true, components: [
 			{content: "Add a new torrent by URL", className: "popup-title"},
-			{name: "urlInput", kind: "Input", hint: "Paste URL here", selection: true, },
+			{name: "urlInput", kind: "Input", hint: "Paste URL here", selection: false, },
 			{name: "confirmRemove", kind: "Button", caption: "Add", flex: 1, onclick: "doAddTorrent"},
 		]},
 		{name: "errorPopup", kind: "Popup", scrim: true, dismissWithClick: true, dismissWithEscape: true, components: [
 			{name: "errorPopupContent", content: "Error message", className: "popup-title"},
 			{name: "errorPopupButton", kind: "Button", caption: "OK", flex: 1, onclick: "closeErrorPopup"},
 		]},
-		{name: "connectingPopup", kind: "Popup", scrim: true, dismissWithClick: true, dismissWithEscape: true, components: [
+		{name: "connectingPopup", kind: "Popup", lazy: false, scrim: true, dismissWithClick: true, dismissWithEscape: true, components: [
 			{kind: "HFlexBox", components: [
 				{kind: "Spacer"},
 				{kind: "SpinnerLarge"},
@@ -418,7 +519,7 @@ enyo.kind({ name: "kttTorrentsList",
 				{kind: "HFlexBox", align: "center", pack: "center", components: [
 					{name: "globalsUpData", content: ""},
 				]},
-				{name: "list", kind: "VirtualRepeater", className: "torrentsList", onGetItem: "getItem", components: [
+				{name: "list", kind: "VirtualRepeater", className: "torrentsList", onSetupRow: "getItem", components: [
 					{kind: "Divider"},
 					{name: "torrentItem", kind: "Item", layoutKind: "HFlexLayout", onclick: "torrentselected", components: [
 						{name: "fulltorrentname", className: "torrentname", flex: 1}
@@ -433,9 +534,9 @@ enyo.kind({ name: "kttTorrentsList",
 		{kind: "Toolbar", components: [
 			{kind: "GrabButton"},
 			{kind: "Spacer"},
-			{ name: "addTorrentButton", caption: "Add Torrent", onclick: "doAddTorrentPopup"},
+			{ name: "addTorrentButton", caption: "Add Torrent", onclick: "openAddTorrentPopup"},
 			{kind: "Spacer"},
-			/*{ name: "addTorrentButton2", kind: "nouveau.MenuButton", icon: "images/13-plus@2x.png", className: "footerAddButton", onclick: "doAddTorrentPopup"},*/
+			/*{ name: "addTorrentButton2", kind: "nouveau.MenuButton", icon: "images/13-plus@2x.png", className: "footerAddButton", onclick: "openAddTorrentPopup"},*/
 		]}
 	],
 
@@ -724,7 +825,7 @@ enyo.kind({ name: "kttTorrentsList",
 		
 		this.$.updateSpinner.hide();
 		
-		if(!debug) this.timer = setTimeout(enyo.bind(this, this.delayedGlobalsCall), 5000);
+		this.timer = setTimeout(enyo.bind(this, this.delayedGlobalsCall), 5000);
 		
 	},
 	addResponse: function(inSender, inResponse) {
@@ -844,8 +945,11 @@ enyo.kind({ name: "kttTorrentsList",
 			this.doTorrentSelected(this.torrents[inEvent.rowIndex]);
 		}
 	},
-	doAddTorrentPopup: function() {
-		this.$.urlInput.setValue("");
+	openAddTorrentPopup: function() {
+	
+		enyo.keyboard.setManualMode(true);
+		enyo.keyboard.show();
+		
 		this.$.addPopup.openAtCenter();
 		this.$.urlInput.forceFocus();
 	},
@@ -854,6 +958,15 @@ enyo.kind({ name: "kttTorrentsList",
 		
 		this.$.addTorrentService.setUrl("http://"+this.hostname+":"+this.port+"/action?load_torrent="+this.$.urlInput.getValue());
 		this.$.addTorrentService.call();
+		
+		this.$.urlInput.setValue("");
+		
+		this.$.urlInput.forceBlur();
+	
+		enyo.keyboard.hide();
+		enyo.keyboard.setManualMode(false);
+		
+		document.activeElement.blur();
 		
 		this.$.addPopup.close("", "doAddTorrent");
 		
@@ -975,7 +1088,7 @@ enyo.kind({ name: "kttTorrentDetails",
 				]},
 			]},
 			//{kind: "RowGroup", caption: "Files", className: "filesGroup", components: [
-				{name: "fileslist", kind: "VirtualRepeater", onGetItem: "getItem", components: [
+				{name: "fileslist", kind: "VirtualRepeater", onSetupRow: "getItem", components: [
 					{kind: "Divider"},
 					{kind: "Item", className: "filenames", layoutKind: "HFlexLayout", components: [
 						{name: "filename", flex: 1, className: "value"},
@@ -1145,34 +1258,40 @@ enyo.kind({ name: "kttTorrentDetails",
 	
 	
 	updateDisplay: function() {
+		if(debug) this.log("updateDisplay: "+enyo.json.stringify(this.torrentDetails));
 		
-		this.$.name.setContent(this.torrentDetails.name);
-		this.$.status.setContent(this.torrentDetails.status);
-		this.$.total_bytes.setContent(this.torrentDetails.total_bytes);
-		this.$.bytes_downloaded.setContent(this.torrentDetails.bytes_downloaded);
-		this.$.bytes_uploaded.setContent(this.torrentDetails.bytes_uploaded);
-		this.$.download_rate.setContent(this.torrentDetails.download_rate);
-		this.$.upload_rate.setContent(this.torrentDetails.upload_rate);
-		this.$.seeders.setContent(this.torrentDetails.seeders);
-		this.$.leechers.setContent(this.torrentDetails.leechers);
-		
-		if((this.torrentDetails.status == "Stopped")||(this.torrentDetails.status == "Download completed")) {
-			this.$.startbutton.setShowing(true);
-			this.$.stopbutton.setShowing(false);
-			this.$.removebutton.setShowing(true);
-		} else if((this.torrentDetails.status == "")||(this.torrentDetails.status == "None")){
-			this.$.startbutton.setShowing(false);
-			this.$.stopbutton.setShowing(false);
-			this.$.removebutton.setShowing(false);
+		try{
+			this.$.name.setContent(this.torrentDetails.name);
+			this.$.status.setContent(this.torrentDetails.status);
+			this.$.total_bytes.setContent(this.torrentDetails.total_bytes);
+			this.$.bytes_downloaded.setContent(this.torrentDetails.bytes_downloaded);
+			this.$.bytes_uploaded.setContent(this.torrentDetails.bytes_uploaded);
+			this.$.download_rate.setContent(this.torrentDetails.download_rate);
+			this.$.upload_rate.setContent(this.torrentDetails.upload_rate);
+			this.$.seeders.setContent(this.torrentDetails.seeders);
+			this.$.leechers.setContent(this.torrentDetails.leechers);
 			
-			this.revealTop();
-		} else {
-			this.$.startbutton.setShowing(false);
-			this.$.stopbutton.setShowing(true);
-			this.$.removebutton.setShowing(true);
+			if((this.torrentDetails.status == "Stopped")||(this.torrentDetails.status == "Download completed")) {
+				this.$.startbutton.setShowing(true);
+				this.$.stopbutton.setShowing(false);
+				this.$.removebutton.setShowing(true);
+			} else if((this.torrentDetails.status == "")||(this.torrentDetails.status == "None")){
+				this.$.startbutton.setShowing(false);
+				this.$.stopbutton.setShowing(false);
+				this.$.removebutton.setShowing(false);
+				
+				this.revealTop();
+			} else {
+				this.$.startbutton.setShowing(false);
+				this.$.stopbutton.setShowing(true);
+				this.$.removebutton.setShowing(true);
+			}
+			
+			this.doFiles();
+			
+		} catch(e){
+			this.error(e);
 		}
-		
-		this.doFiles();
 	},
 	doFiles: function() {
 		this.files.length = 0
