@@ -1,0 +1,10 @@
+{
+	"id": "com.thewbman.ktorrenttouch",
+	"version": "0.1.2",
+	"vendor": "thewbman",
+	"type": "web",
+	"main": "device.html",
+	"title": "KTorrent Touch",
+	"icon": "icon.png",
+	"uiRevision": "2"
+}
