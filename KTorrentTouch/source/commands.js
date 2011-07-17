@@ -1,5 +1,18 @@
 
 
+function defaultCookie() {
+
+	var newCookieObject = {
+		
+		allowMetrix: true, 
+		
+		debug: false
+		
+	};
+	
+	return newCookieObject;
+};
+
 var sort_by = function(field, reverse, primer){
 
    reverse = (reverse) ? -1 : 1;

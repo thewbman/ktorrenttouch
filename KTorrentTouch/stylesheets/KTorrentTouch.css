@@ -9,6 +9,7 @@
 .enyo-toolbar {
 	background-color: #0B0B3B;
 	color: white;
+	min-height: 58px;
 }
 
 .enyo-popup {

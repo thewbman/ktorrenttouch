@@ -3,5 +3,7 @@ enyo.depends(
 	"stylesheets/KTorrentTouch.css",
 	
 	"source/sha.js",
-	"source/commands.js"
+	"source/commands.js",
+	
+	"source/libraries/Metrix/metrix.js"
 );
