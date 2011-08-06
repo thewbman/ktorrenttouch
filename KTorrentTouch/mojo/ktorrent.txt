@@ -1,0 +1,277 @@
+ - search for ktorrent with bonjour
+ 
+ - base/login.html
+ - base/login/challenge.xml
+ - base/login?page=interface.html    POST username=NAME&password=PASS&Login=Sign+in&challenge=1d5c1ef7caccb4533b08fe7358ae3b0b49e94ac8
+ - base/data/settings.xml
+ - base/data/torrents.xml
+ - base/data/global.xml
+ - base/data/torrent/files.xml?torrent=2		//numbers staart from 0
+ 
+ - base/action?start=2   --> returns <result>OK</result>
+ - base/action?stop=2
+ - base/action?remove=2
+ - base/action?load_torrent=URL
+ 
+ - base/action?file_hp=2-10				high-priority		torrent-file
+ - base/action?file_lp=2-10				low-priority		torrent-file
+ - base/action?file_np=2-10				normal-priority		torrent-file
+ - base/action?file_stop=2-10			stop download, only seed	
+ 
+ - base/action?shutdown=true 
+ 
+ 
+POST settings.xml
+ - maxUploadRate=31&
+ - maxDownloadRate=400&
+ - maxDownloads=3&
+ - maxSeeds=5&
+ - useEncryption=0&
+ - allowUnencryptedConnections=1&
+ - dhtSupport=0&
+ - pexEnabled=1&			//use peer exchange
+ - webgui_automatic_refresh=1
+ 
+ 
+ 
+ 
+ 
+ 
+
+//challenge
+<?xml version="1.0" encoding="UTF-8"?>
+<challenge>0EOv17Hr4GuTL7vtCur0</challenge>
+
+ 
+//settings.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+    <maxDownloads>3</maxDownloads>
+    <maxSeeds>5</maxSeeds>
+    <startDownloadsOnLowDiskSpace>0</startDownloadsOnLowDiskSpace>
+    <maxConnections>120</maxConnections>
+    <maxTotalConnections>800</maxTotalConnections>
+    <maxUploadRate>30</maxUploadRate>
+    <maxDownloadRate>400</maxDownloadRate>
+    <maxRatio>2</maxRatio>
+    <port>6881</port>
+    <udpTrackerPort>4444</udpTrackerPort>
+    <showSystemTrayIcon>true</showSystemTrayIcon>
+    <showSpeedBarInTrayIcon>false</showSpeedBarInTrayIcon>
+    <downloadBandwidth>500</downloadBandwidth>
+    <uploadBandwidth>500</uploadBandwidth>
+    <showPopups>true</showPopups>
+    <keepSeeding>true</keepSeeding>
+    <tempDir></tempDir>
+    <useSaveDir>true</useSaveDir>
+    <saveDir></saveDir>
+    <useTorrentCopyDir>false</useTorrentCopyDir>
+    <torrentCopyDir></torrentCopyDir>
+    <useCustomIP>false</useCustomIP>
+    <lastSaveDir></lastSaveDir>
+    <customIP></customIP>
+    <guiUpdateInterval>1000</guiUpdateInterval>
+    <dhtSupport>false</dhtSupport>
+    <dhtPort>6881</dhtPort>
+    <pexEnabled>true</pexEnabled>
+    <numUploadSlots>2</numUploadSlots>
+    <useEncryption>false</useEncryption>
+    <allowUnencryptedConnections>true</allowUnencryptedConnections>
+    <doUploadDataCheck>true</doUploadDataCheck>
+    <useMaxSizeForUploadDataCheck>true</useMaxSizeForUploadDataCheck>
+    <maxSizeForUploadDataCheck>512</maxSizeForUploadDataCheck>
+    <typeOfService>8</typeOfService>
+    <dscp>0</dscp>
+    <maxConnectingSockets>50</maxConnectingSockets>
+    <autoRecheck>true</autoRecheck>
+    <checkWhenFinished>false</checkWhenFinished>
+    <maxCorruptedBeforeRecheck>3</maxCorruptedBeforeRecheck>
+    <shownColumns></shownColumns>
+    <useKDEProxySettings>true</useKDEProxySettings>
+    <httpProxy></httpProxy>
+    <httpProxyPort>8080</httpProxyPort>
+    <useProxyForWebSeeds>true</useProxyForWebSeeds>
+    <useProxyForTracker>true</useProxyForTracker>
+    <socksEnabled>false</socksEnabled>
+    <socksProxy></socksProxy>
+    <socksPort>1080</socksPort>
+    <socksVersion>5</socksVersion>
+    <socksUsePassword>false</socksUsePassword>
+    <socksUsername></socksUsername>
+    <socksPassword></socksPassword>
+    <eta>0</eta>
+    <diskPrealloc>true</diskPrealloc>
+    <fullDiskPrealloc>false</fullDiskPrealloc>
+    <minDiskSpace>100</minDiskSpace>
+    <cpuUsage>50</cpuUsage>
+    <useCompletedDir>false</useCompletedDir>
+    <completedDir></completedDir>
+    <maxSeedTime>0</maxSeedTime>
+    <networkInterface>0</networkInterface>
+    <openMultipleTorrentsSilently>true</openMultipleTorrentsSilently>
+    <decreasePriorityOfStalledTorrents>false</decreasePriorityOfStalledTorrents>
+    <stallTimer>15</stallTimer>
+    <previewSizeAudio>256</previewSizeAudio>
+    <previewSizeVideo>2048</previewSizeVideo>
+    <suppressSleep>true</suppressSleep>
+    <oldTorrentsImported>true</oldTorrentsImported>
+    <manuallyControlTorrents>false</manuallyControlTorrents>
+    <webseedsEnabled>true</webseedsEnabled>
+    <useQHttpAnnounce>false</useQHttpAnnounce>
+    <lookUpHostnameOfPeers>true</lookUpHostnameOfPeers>
+    <webgui_automatic_refresh>true</webgui_automatic_refresh>
+</settings>
+
+
+//torrents.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<torrents>
+    <torrent>
+        <name>Spartacus.Gods.of.the.Arena.Pt.III.HDTV.XviD-ASAP.avi</name>
+        <info_hash>e42d0ce2beebcd27b4d767af9e9a7929cb7696a1</info_hash>
+        <status>Seeding</status>
+        <bytes_downloaded>551.0 MiB</bytes_downloaded>
+        <bytes_uploaded>583.6 MiB</bytes_uploaded>
+        <total_bytes>551.0 MiB</total_bytes>
+        <total_bytes_to_download>551.0 MiB</total_bytes_to_download>
+        <download_rate>580 B/s</download_rate>
+        <upload_rate>14.4 KiB/s</upload_rate>
+        <num_peers>105</num_peers>
+        <seeders>0</seeders>
+        <seeders_total>17437</seeders_total>
+        <leechers>105</leechers>
+        <leechers_total>27181</leechers_total>
+        <running>1</running>
+        <percentage>100.00</percentage>
+        <num_files>0</num_files>
+    </torrent>
+    <torrent>
+        <name>Spartacus.Gods.of.the.Arena.Pt.III.720p.HDTV.x264-IMMERSE.mkv</name>
+        <info_hash>15b247ce961187df3af545677744ed8f43598099</info_hash>
+        <status>Downloading</status>
+        <bytes_downloaded>705.0 MiB</bytes_downloaded>
+        <bytes_uploaded>179.8 MiB</bytes_uploaded>
+        <total_bytes>1.5 GiB</total_bytes>
+        <total_bytes_to_download>1.5 GiB</total_bytes_to_download>
+        <download_rate>30.2 KiB/s</download_rate>
+        <upload_rate>15.4 KiB/s</upload_rate>
+        <num_peers>115</num_peers>
+        <seeders>19</seeders>
+        <seeders_total>1148</seeders_total>
+        <leechers>96</leechers>
+        <leechers_total>10317</leechers_total>
+        <running>1</running>
+        <percentage>47.12</percentage>
+        <num_files>0</num_files>
+    </torrent>
+</torrents>
+
+
+//global.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<global_data>
+    <transferred_down>2.1 GiB</transferred_down>
+    <transferred_up>2.8 GiB</transferred_up>
+    <speed_down>30.8 KiB/s</speed_down>
+    <speed_up>29.8 KiB/s</speed_up>
+    <dht>0</dht>
+    <encryption>0</encryption>
+</global_data>
+
+
+//torrent files
+<?xml version="1.0" encoding="UTF-8"?>
+<torrent>
+    <file>
+        <path>06-ludacris-sex_room_feat._trey_songz-ftd.mp3</path>
+        <priority>40</priority>
+        <percentage>10.00</percentage>
+        <size>8.7 MiB</size>
+    </file>
+    <file>
+        <path>10-ludacris-b.o.t.s._radio_feat._i-20-ftd.mp3</path>
+        <priority>40</priority>
+        <percentage>10.00</percentage>
+        <size>7.3 MiB</size>
+    </file>
+    <file>
+        <path>07-ludacris-i_know_you_got_a_man_feat._flo_rida-ftd.mp3</path>
+        <priority>40</priority>
+        <percentage>11.11</percentage>
+        <size>6.6 MiB</size>
+    </file>
+    <file>
+        <path>15-ludacris-sexting_(bonus_track)-ftd.mp3</path>
+        <priority>40</priority>
+        <percentage>12.00</percentage>
+        <size>6.1 MiB</size>
+    </file>
+    <file>
+        <path>05-ludacris-i_do_it_all_night-ftd.mp3</path>
+        <priority>40</priority>
+        <percentage>12.77</percentage>
+        <size>5.8 MiB</size>
+    </file>
+    <file>
+        <path>11-ludacris-cant_live_with_you_feat._monica-ftd.mp3</path>
+        <priority>40</priority>
+        <percentage>15.56</percentage>
+        <size>5.5 MiB</size>
+    </file>
+    <file>
+        <path>09-ludacris-party_ho_mo_feat._gucci_mane-ftd.mp3</path>
+        <priority>40</priority>
+        <percentage>15.91</percentage>
+        <size>5.4 MiB</size>
+    </file>
+    <file>
+        <path>13-ludacris-tell_me_a_secret_feat._ne-yo-ftd.mp3</path>
+        <priority>40</priority>
+        <percentage>15.91</percentage>
+        <size>5.4 MiB</size>
+    </file>
+    <file>
+        <path>08-ludacris-hey_ho_feat._lil_kim_and_lil_fate-ftd.mp3</path>
+        <priority>40</priority>
+        <percentage>14.29</percentage>
+        <size>5.1 MiB</size>
+    </file>
+    <file>
+        <path>04-ludacris-everybody_drunk_feat._lil_scrappy-ftd.mp3</path>
+        <priority>40</priority>
+        <percentage>17.50</percentage>
+        <size>4.9 MiB</size>
+    </file>
+    <file>
+        <path>14-ludacris-my_chick_bad_remix_feat._diamond_trina_and_eve-ftd.mp3</path>
+        <priority>40</priority>
+        <percentage>16.67</percentage>
+        <size>4.3 MiB</size>
+    </file>
+    <file>
+        <path>12-ludacris-feelin_so_sexy-ftd.mp3</path>
+        <priority>40</priority>
+        <percentage>17.14</percentage>
+        <size>4.3 MiB</size>
+    </file>
+    <file>
+        <path>02-ludacris-how_low-ftd.mp3</path>
+        <priority>40</priority>
+        <percentage>20.00</percentage>
+        <size>4.2 MiB</size>
+    </file>
+    <file>
+        <path>03-ludacris-my_chick_bad_feat._nicki_minaj-ftd.mp3</path>
+        <priority>40</priority>
+        <percentage>20.59</percentage>
+        <size>4.1 MiB</size>
+    </file>
+    <file>
+        <path>01-ludacris-intro-ftd.mp3</path>
+        <priority>40</priority>
+        <percentage>62.50</percentage>
+        <size>1.8 MiB</size>
+    </file>
+</torrent>
+
+

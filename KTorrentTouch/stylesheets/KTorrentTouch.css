@@ -1,12 +1,12 @@
 /*asdf */
 
-.KTorrentTouch,
-.KTorrentTouch .enyo-bg {
+.dark,
+.dark .enyo-bg {
 	background: #191C26;
 	color: white;
 }
 
-.enyo-toolbar {
+.dark .enyo-toolbar {
 	background-color: #0B0B3B;
 	color: white;
 	min-height: 58px;
@@ -17,9 +17,9 @@
 	color: black;
 }
 
-.header {
+.dark .header {
 	padding: 10px;
-	background: #ccc;
+	background: #cccccc;
 	border: 1px solid gray;
 	z-index: 10;
 	margin-bottom: 4px;
@@ -49,7 +49,7 @@
 	text-align: center;
 }
 
-.kttHostsList {
+.dark .kttHostsList {
 	padding: 8px;
 	background: lightblue;
 	border: 3px solid blue;
@@ -90,7 +90,7 @@
 	height: 50px;
 }
 
-.footer {
+.dark .footer {
 	padding: 8px;
 	background: white;
 	border: 3px solid purple;
@@ -106,7 +106,7 @@
 	padding-top: 2px;
 }
 
-.label {
+.dark .label {
 	text-transform: uppercase;
 	color:rgb(31,117,191);
 	font-size: 14px;
@@ -117,8 +117,79 @@
 	font-size: 16px;
 }
 
-.hostsList .selected,
-.torrentsList .selected {
+.dark .hostsList .selected,
+.dark .torrentsList .selected {
 	background-color: rgba(255,255,255,0.15);
+}
+
+.dark .labeledListItem {
+	border-top: none;
+	border-bottom: none;
+}
+
+.dark .unlabeledListItem {
+	border-top: 1px solid silver;
+	border-bottom: none;
+}
+
+.helpContent {
+	padding: 5px;
+	margin: 5px;
+	font-size: 16px;
+}
+
+.dark .helpContent a {
+	color: #9DC8E7;
+}
+
+
+/* light */
+
+.light,
+.light .enyo-bg {
+	color: black;
+	background-color: #c8c8c8;
+}
+
+.light .enyo-toolbar {
+	color: black;
+	min-height: 58px;
+	background-color: #999999;
+}
+
+.light .header {
+	padding: 10px;
+	background: #999999;
+	border: 1px solid gray;
+	z-index: 10;
+	margin-bottom: 4px;
+}
+
+.light .kttHostsList {
+	padding: 8px;
+	background: lightblue;
+	border: 3px solid blue;
+}
+
+.light .label {
+	text-transform: uppercase;
+	color:rgb(31,117,191);
+	font-size: 14px;
+	padding-top: 2px;
+}
+
+.light .hostsList .selected,
+.light .torrentsList .selected {
+	background-color: rgba(0,0,0,0.15);
+} 
+
+.light .labeledListItem {
+	border-top: none;
+	border-bottom: none;
+}
+
+.light .unlabeledListItem {
+	border-top: 1px solid #808080;
+	border-bottom: none;
 }
 
