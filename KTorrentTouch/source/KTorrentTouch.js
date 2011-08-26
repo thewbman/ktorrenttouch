@@ -38,7 +38,7 @@ enyo.kind({
 			{kind: "Button", caption: "Help", onclick:"openHelp"}
 		]},
 		
-		{name: "preferencesPopup", kind: "Popup", scrim: true, showKeyboardWhenOpening: true, onBeforeOpen: "beforeOpenPreferencesPopup", components: [
+		{name: "preferencesPopup", kind: "Popup", scrim: true, showKeyboardWhenOpening: false, onBeforeOpen: "beforeOpenPreferencesPopup", components: [
 			{content: "KTorrentTouch", style: "text-align: center; font-size: larger;"},
 			{content: "<hr />", allowHtml: true},			
 			{kind: "HFlexBox", components: [
@@ -82,7 +82,7 @@ enyo.kind({
 		if(debug) this.log("create");
 		this.inherited(arguments);
 		
-		enyo.keyboard.setResizesWindow(false);
+		//enyo.keyboard.setResizesWindow(false);
 		
 		KTorrentTouch.Metrix = new Metrix();
 		
@@ -1091,7 +1091,7 @@ enyo.kind({ name: "kttTorrentDetails",
 		
 		{kind: "Scroller", autoHorizontal: false, horizontal: false, autoVertical: true, flex: 1, components: [
 			
-			{kind: "RowGroup", caption: "Details", components: [
+			{kind: "RowGroup", showing: false, caption: "Details", components: [
 				{kind: "HFlexBox", align: "center", tapHighlight: false, components: [
 					{content: "", flex: 1},
 					{name: "name", className: "name"},
@@ -1195,6 +1195,8 @@ enyo.kind({ name: "kttTorrentDetails",
 	},
 	gotDisconnected: function() {
 		if(debug) this.log("gotDisconnected");
+		
+		this.$.rowGroup.hide();
 		
 		this.torrentDetails.name = "";
 		this.torrentDetails.status = "";
@@ -1308,6 +1310,12 @@ enyo.kind({ name: "kttTorrentDetails",
 	
 	updateDisplay: function() {
 		if(debug) this.log("updateDisplay: "+enyo.json.stringify(this.torrentDetails));
+		
+		if(this.torrentDetails.name == "")	{
+			this.$.rowGroup.hide();
+		} else {
+			this.$.rowGroup.show();
+		}
 		
 		try{
 			this.$.name.setContent(this.torrentDetails.name);
