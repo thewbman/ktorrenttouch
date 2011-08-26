@@ -4,7 +4,7 @@ function defaultCookie() {
 
 	var newCookieObject = {
 		
-		theme: "dark", 
+		theme: "light", 
 		
 		allowMetrix: true, 
 		

@@ -321,7 +321,7 @@ TorrentsAssistant.prototype.getSettings = function(event) {
 TorrentsAssistant.prototype.settingsPageFail = function() {
 
 	Mojo.Log.error("Failed to get settings");
-	$('spinner-text').innerHTML = $L("Failed to get settings");
+	$('spinner-text').innerHTML = $L("Failed to get settings, possible username/password error");
 
 };
 

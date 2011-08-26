@@ -1,6 +1,6 @@
 enyo.depends(
 	"source/KTorrentTouch.js",
-	"stylesheets/KTorrentTouch.css",
+	"stylesheets/KTorrentTouch-enyo.css",
 	
 	"source/sha.js",
 	"source/commands.js",
