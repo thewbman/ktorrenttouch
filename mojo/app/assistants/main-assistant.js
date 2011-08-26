@@ -36,8 +36,6 @@ MainAssistant.prototype.setup = function() {
 			{ },
 			{ label: $L("Add"), command: 'go-addHost', width: 90 } ,
 			{ },
-			{ label: $L("Search"), command: 'go-searchHost', width: 90 },
-			{ },
 		]
 	};
 	
@@ -70,10 +68,10 @@ MainAssistant.prototype.setup = function() {
 			Mojo.Log.info("Submitting data to Metrix");
 			
 			//Metrix command
-			//KTorrentTouch.Metrix.postDeviceData();
+			KTorrentTouch.Metrix.postDeviceData();
 			
 			//Metrix bulletin
-			//KTorrentTouch.Metrix.checkBulletinBoard(this.controller, 10);
+			KTorrentTouch.Metrix.checkBulletinBoard(this.controller, 10);
 			
 		};
 		

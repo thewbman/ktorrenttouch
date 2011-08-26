@@ -24,7 +24,7 @@ function defaultCookie() {
 	var newCookieObject = {
 		hosts: [],							
 		allowMetrix: true,
-		refreshTime: 5
+		refreshTime: 5,
 	};
 	
 	return newCookieObject;
