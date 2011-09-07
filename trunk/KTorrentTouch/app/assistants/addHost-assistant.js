@@ -99,7 +99,8 @@ AddHostAssistant.prototype.setup = function() {
      );
 	
 	
-	Mojo.Event.listen(this.controller.get("submitButtonId"),Mojo.Event.tap, this.submitNewHost.bind(this));
+	//Mojo.Event.listen(this.controller.get("submitButtonId"),Mojo.Event.tap, this.submitNewHost.bind(this));
+	Mojo.Event.listen(this.controller.get("submitButtonId"),Mojo.Event.tap, this.validateHost.bind(this));
 
 };
 
@@ -119,13 +120,41 @@ AddHostAssistant.prototype.cleanup = function(event) {
 
 
 
+AddHostAssistant.prototype.validateHost = function(event) {
+
+	var problem = false;
+	var problemMessage = "";
+
+	if(this.hostTextModel.value == "") {
+		problem = true;
+		problemMessage = "You must give a hostname or IP address";
+	} else if(this.portTextModel.value == "") {
+		problem = true;
+		problemMessage = "You must give a port";
+	} else if(this.usernameTextModel.value == "") {
+		problem = true;
+		problemMessage = "You must give a username";
+	} else if(this.passwordTextModel.value == "") {
+		problem = true;
+		problemMessage = "You must give a password";
+	} else {
+		//
+	}
+	
+	if(problem) {
+		Mojo.Controller.errorDialog(problemMessage);
+	} else {
+		this.submitNewHost();
+	}
+
+}
 
 AddHostAssistant.prototype.submitNewHost = function(event) {
 	
 	//Returns data to host selector scene
 	var newHost = {
 		'hostname': this.hostTextModel.value,
-		'port': this.portTextModel.value,
+		'port': parseInt(this.portTextModel.value),
 		'username': this.usernameTextModel.value,
 		'password': this.passwordTextModel.value
 	};
