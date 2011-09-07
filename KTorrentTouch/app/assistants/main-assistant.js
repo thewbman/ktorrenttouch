@@ -60,6 +60,13 @@ MainAssistant.prototype.setup = function() {
 	this.controller.listen(this.controller.get( "hostlist" ), Mojo.Event.listTap, this.chooseList.bind(this));
 	this.controller.listen(this.controller.get( "hostlist" ), Mojo.Event.listDelete, this.deleteHost.bind(this));
 	
+	
+	//Use theme
+	this.controller.document.body.className = 'palm-dark';
+	this.controller.document.body.className += " device-"+Mojo.Environment.DeviceInfo.modelNameAscii;
+	this.controller.document.body.className += " width-"+Mojo.Environment.DeviceInfo.screenWidth;
+	this.controller.document.body.className += " height-"+Mojo.Environment.DeviceInfo.screenHeight;
+	
 
 	if (KTorrentTouch.cookieObject) {		//cookie exists
 			
@@ -85,14 +92,11 @@ MainAssistant.prototype.setup = function() {
 		KTorrentTouch.cookieObject = defaultCookie();
 		KTorrentTouch.cookie.put(KTorrentTouch.cookieObject);
 		
+		this.openAbout();
+		
 	};
 	
 		
-	//Use theme
-	this.controller.document.body.className = 'palm-dark';
-	this.controller.document.body.className += " device-"+Mojo.Environment.DeviceInfo.modelNameAscii;
-	this.controller.document.body.className += " width-"+Mojo.Environment.DeviceInfo.screenWidth;
-	this.controller.document.body.className += " height-"+Mojo.Environment.DeviceInfo.screenHeight;
 
 };
 
@@ -159,6 +163,32 @@ MainAssistant.prototype.handleKey = function(event) {
 
 
 
+MainAssistant.prototype.openAbout = function(event) {
+
+	var aboutinfo = "KTorrentTouch is an app for controlling a KTorrent program.  You should already have a KTorrent program setup and running on your computer for this app to work.   The torrents are downloaded to the computer and not to this device.  ";
+	
+	aboutinfo += '<hr/><center><a href="http://code.google.com/p/ktorrenttouch/">App homepage</a></center>';  
+			
+	//aboutinfo += '<hr/><a href="http://ktorrent.org/">KTorrent homepage</a>';  
+	
+	//aboutinfo += "Licensed under <a href='http://www.gnu.org/licenses/gpl-2.0.html'>GPLv2</a>."
+    this.controller.showAlertDialog({
+        onChoose: function(value) {if (value==true) {
+					Mojo.Controller.stageController.pushScene("help");
+					}
+				},
+				title: Mojo.Controller.appInfo.title+" - v" + Mojo.Controller.appInfo.version,
+                //message: "Copyright 2011, Wes Brown <br />" + aboutinfo,
+                message: aboutinfo,
+                choices: [
+					{label: $L("OK"), value: false},
+					{label: $L("Help"), value: true}
+					],
+                allowHTMLMessage: true
+            });
+	
+};
+
 MainAssistant.prototype.deleteHost = function(event) {
 	
 	var selectedHost = event.item.hostname;
@@ -172,12 +202,13 @@ MainAssistant.prototype.deleteHost = function(event) {
 	
 	for(var i = 0; i < this.resultList.length; i++){
 		
-		if(this.resultList[i].hostname == selectedHost) {
+		if((this.resultList[i].hostname == selectedHost)&&(this.resultList[i].username == event.item.username)&&(this.resultList[i].password == event.item.password)) {
 			//We want to delete this, don't use
 		} else {
 			newList.push(this.resultList[i]);
 		}
 	}
+	
 	
 	//Update cookie
 	KTorrentTouch.cookieObject.hosts.clear();

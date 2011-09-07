@@ -61,10 +61,15 @@ enyo.kind({
 			{kind: "Button", caption: "OK", onclick:"closePreferencesPopup"}
 		]},
 		
+		{name: "messagePopup", kind: "Popup", scrim: true, onBeforeOpen: "beforeBannerMessageOpen", components: [
+			{name: "messagePopupText", style: "text-align: center;"},
+			{kind: "Button", caption: "OK", onclick:"closeMessagePopup"}
+		]},
+		
 		{flex: 1, kind: "Pane", className: "pane", onSelectView: "viewSelected", transitionKind: "enyo.transitions.Simple", components: [
 			{name: "slidingPane", kind: "SlidingPane", flex: 1, wideWidth: this.phonePixels, onChange: "slidingChanged", components: [	
 				{name: "left", dragAnywhere: false, width: "33%", components: [
-					{kind: "kttHostsList", onHostSelected: "gotHostSelected", onPreferences: "openPreferences", onOpenAboutPopup: "openAbout", onSavePreferences: "savePreferences"},
+					{kind: "kttHostsList", onHostSelected: "gotHostSelected", onPreferences: "openPreferences", onOpenAboutPopup: "openAbout", onSavePreferences: "savePreferences", onBannerMessage: "bannerMessage"},
 				]},
 				{name: "middle", dragAnywhere: false, width: "50%", components: [
 					{kind: "kttTorrentsList", onTorrentSelected: "gotTorrentSelected", onTorrentDetailsUpdate: "gotTorrentDetailsUpdate", onDisconnected: "gotDisconnected"},
@@ -233,6 +238,29 @@ enyo.kind({
 		this.$.kttTorrentDetails.activate();
 	},
 	
+	bannerMessage: function(inSender, inMessage, forcePopup) {
+		if(debug) this.log("bannerMessage: "+inMessage);
+		
+		if((forcePopup)||(!window.PalmSystem)){
+			this.messageText = inMessage;
+			this.$.messagePopup.openAtCenter();
+		} else {
+			enyo.windows.addBannerMessage(inMessage, "{}");
+		} 
+		
+	},
+	beforeBannerMessageOpen: function() {
+		if(debug) this.log("beforeBannerMessageOpen");
+		
+		this.$.messagePopupText.setContent(this.messageText);
+	},
+	closeMessagePopup: function() {
+		if(debug) this.log("messagePopupClick");
+		
+		this.$.messagePopup.close();
+		
+	},		
+	
 	gotHostSelected: function(inSender, inObject) {
 		if(debug) this.log("gotHostSelected: "+enyo.json.stringify(inObject));
 		//this.$.pane.selectViewByName("kttTorrentsList");
@@ -332,6 +360,7 @@ enyo.kind({ name: "kttHostsList",
 		onPreferences: "",
 		onOpenAboutPopup: "",
 		onSavePreferences: "",
+		onBannerMessage: "",
 	},
 	
 	selectedRow: -1,
@@ -339,11 +368,11 @@ enyo.kind({ name: "kttHostsList",
 	components: [
 		{name: "addPopup", kind: "Popup", scrim: true, dismissWithClick: true, dismissWithEscape: true, showKeyboardWhenOpening: true, components: [
 			{content: "Add a new KTorrent server", className: "popup-title"},
-			{name: "hostnameInput", kind: "Input", hint: "Hostname", autoCapitalize: "lowercase", selection: false, },
+			{name: "hostnameInput", kind: "Input", hint: "Hostname or IP", autoCapitalize: "lowercase", selection: false, },
 			{name: "portInput", kind: "Input", hint: "Port", autoCapitalize: "lowercase", selection: false, },
 			{name: "usernameInput", kind: "Input", hint: "Username", autoCapitalize: "lowercase", selection: false, },
 			{name: "passwordInput", kind: "PasswordInput", hint: "Password", selection: false, },
-			{name: "confirmRemove", kind: "Button", caption: "Add", flex: 1, onclick: "doAddHost"},
+			{name: "confirmRemove", kind: "Button", caption: "Add", flex: 1, onclick: "validateHost"},
 		]},
 		{name: "searchPopup", kind: "Popup", scrim: true, dismissWithClick: true, dismissWithEscape: true, components: [
 			{content: "Searching for hosts is not supported at this time", className: "popup-title"},
@@ -373,7 +402,7 @@ enyo.kind({ name: "kttHostsList",
 		]},
 		{kind: "Toolbar", components: [
 			{kind: "Spacer"},
-			{caption: "Add Host", onclick: "doAddHostPopup"},
+			{caption: "Add Host", onclick: "addHostPopup"},
 			{kind: "Spacer"},
 		]}
 	],
@@ -457,7 +486,7 @@ enyo.kind({ name: "kttHostsList",
 		this.doSaveHosts();
 	},
 	
-	doAddHostPopup: function() {
+	addHostPopup: function() {
 		//this.$.hostnameInput.setValue("");
 		//this.$.portInput.setValue("");
 		//this.$.usernameInput.setValue("");
@@ -469,7 +498,35 @@ enyo.kind({ name: "kttHostsList",
 		this.$.addPopup.openAtCenter();
 		this.$.hostnameInput.forceFocus();
 	},
-	doAddHost: function() {
+	validateHost: function() {
+	
+		var problem = false;
+		var problemMessage = "";
+	
+		if(this.$.hostnameInput.getValue() == "") {
+			problem = true;
+			problemMessage = "You must give a hostname or IP address";
+		} else if(this.$.portInput.getValue() == "") {
+			problem = true;
+			problemMessage = "You must give a port";
+		} else if(this.$.usernameInput.getValue() == "") {
+			problem = true;
+			problemMessage = "You must give a username";
+		} else if(this.$.passwordInput.getValue() == "") {
+			problem = true;
+			problemMessage = "You must give a password";
+		} else {
+			//
+		}
+		
+		if(problem) {
+			this.doBannerMessage(problemMessage, true);
+		} else {
+			this.addHost();
+		}
+	
+	},
+	addHost: function() {
 		KTorrentTouch.hostsList.push({hostname: this.$.hostnameInput.getValue(), port: this.$.portInput.getValue(), username: this.$.usernameInput.getValue(), password: this.$.passwordInput.getValue()});
 		
 		this.$.addPopup.close();

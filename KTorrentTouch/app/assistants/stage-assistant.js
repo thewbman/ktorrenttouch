@@ -69,7 +69,7 @@ StageAssistant.prototype.handleCommand = function(event) {
     switch(event.command) {
       case 'do-aboutApp':
         
-			aboutinfo = "KTorrentTouch is an app for controlling a KTorrent program.  You should already have a KTorrent program setup and running on your computer for this app to work.   The torrents are downloaded to the computer and not to this device.  ";
+			var aboutinfo = "KTorrentTouch is an app for controlling a KTorrent program.  You should already have a KTorrent program setup and running on your computer for this app to work.   The torrents are downloaded to the computer and not to this device.  ";
 			
 			aboutinfo += '<hr/><center><a href="http://code.google.com/p/ktorrenttouch/">App homepage</a></center>';  
 			
