@@ -225,6 +225,8 @@ MainAssistant.prototype.chooseList = function(event) {
 	
 	KTorrentTouch.currentHost = event.item;
 	
+	KTorrentTouch.currentUrl = "http://"+KTorrentTouch.currentHost.hostname+":"+KTorrentTouch.currentHost.port";
+	
 	Mojo.Controller.stageController.pushScene("torrents");
 	
 };

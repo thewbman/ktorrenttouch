@@ -12,12 +12,14 @@ enyo.kind({
 	published: {
 		currentview: "kttHostsList",
 		phonePixels: 500,					//switch from phone mode to tablet
-		currentMode: "torrents"
+		currentMode: "torrents",
+		currentUrl: "http://www.google.com/",
 	},
 	components: [
 		{kind: "AppMenu", components: [
 			{caption: "About", onclick: "openAbout"},
 			{caption: "Preferences", onclick: "openPreferences"},
+			{caption: "Open in browser", onclick: "openWebpage"},
 			{caption: "Help", components: [
 				{caption: "Help", onclick: "openHelp"},
 				{caption: "Email developer", onclick: "emailDeveloper"},
@@ -136,9 +138,9 @@ enyo.kind({
 	submitMetrix: function() {
 		if(debug) this.log("submitMetrix");
 		
-		KTorrentTouch.Metrix.postDeviceData();
+		if(window.PalmSystem) KTorrentTouch.Metrix.postDeviceData();
 		
-		KTorrentTouch.Metrix.checkBulletinBoard(1, false);
+		if(window.PalmSystem) KTorrentTouch.Metrix.checkBulletinBoard(1, false);
 		
 	},
 	
@@ -156,6 +158,11 @@ enyo.kind({
 		if(debug) this.log("openPreferences");
 		
 		this.$.preferencesPopup.openAtCenter();
+	},
+	openWebpage: function() {
+		if(debug) this.log("openWebpage");
+		
+		window.open(this.currentUrl);
 	},
 	beforeOpenPreferencesPopup: function() {
 		if(debug) this.log("beforeOpenPreferencesPopup");
@@ -264,6 +271,8 @@ enyo.kind({
 	gotHostSelected: function(inSender, inObject) {
 		if(debug) this.log("gotHostSelected: "+enyo.json.stringify(inObject));
 		//this.$.pane.selectViewByName("kttTorrentsList");
+		
+		this.currentUrl = "http://"+inObject.hostname+":"+inObject.port;
 		
 		this.$.kttTorrentsList.gotHostnameData(inObject);
 		this.$.kttTorrentDetails.gotHostnameData(inObject);
@@ -1211,6 +1220,7 @@ enyo.kind({ name: "kttTorrentDetails",
 			{kind: "GrabButton"},
 			{kind: "Spacer"},
 			{name: "startbutton", caption: "Start", onclick: "doStart"},
+			{kind: "Spacer"},
 			{name: "stopbutton", caption: "Stop", onclick: "doStop"},
 			{kind: "Spacer"},
 			{name: "removebutton", caption: "Remove", onclick: "confirmRemove"},
@@ -1387,7 +1397,7 @@ enyo.kind({ name: "kttTorrentDetails",
 			
 			if((this.torrentDetails.status == "Stopped")||(this.torrentDetails.status == "Download completed")) {
 				this.$.startbutton.setShowing(true);
-				this.$.stopbutton.setShowing(false);
+				this.$.stopbutton.setShowing(true);
 				this.$.removebutton.setShowing(true);
 			} else if((this.torrentDetails.status == "")||(this.torrentDetails.status == "None")){
 				this.$.startbutton.setShowing(false);
@@ -1396,7 +1406,7 @@ enyo.kind({ name: "kttTorrentDetails",
 				
 				this.revealTop();
 			} else {
-				this.$.startbutton.setShowing(false);
+				this.$.startbutton.setShowing(true);
 				this.$.stopbutton.setShowing(true);
 				this.$.removebutton.setShowing(true);
 			}
