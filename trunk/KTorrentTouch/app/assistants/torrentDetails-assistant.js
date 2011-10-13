@@ -34,11 +34,11 @@ TorrentDetailsAssistant.prototype.setup = function() {
 	// Menu grouping at bottom of scene
     this.cmdMenuModel = { label: $L('Torrent Menu'),
                             items: [
+								{label: $L('Start'), command:'do-startTorrent', width: 100},
 								{},
 								{label: $L('Stop'), command:'do-stopTorrent', width: 100},
 								{},
 								{label: $L('Remove'), command:'do-removeTorrent', width: 100},
-								{}
 							]};
  
 	this.controller.setupWidget(Mojo.Menu.commandMenu, {menuClass: 'no-fade'}, this.cmdMenuModel);
@@ -144,10 +144,10 @@ TorrentDetailsAssistant.prototype.updateCommandMenu = function() {
 
 	if((this.torrentObject.status == "Stopped")||(this.torrentObject.status == "Download completed")) {
 		
-		this.cmdMenuModel.items[1].label = $L('Start');
-		this.cmdMenuModel.items[1].command = 'do-startTorrent';
+		//this.cmdMenuModel.items[1].label = $L('Start');
+		//this.cmdMenuModel.items[1].command = 'do-startTorrent';
 		
-		this.controller.modelChanged(this.cmdMenuModel);
+		//this.controller.modelChanged(this.cmdMenuModel);
 	}
 
 };

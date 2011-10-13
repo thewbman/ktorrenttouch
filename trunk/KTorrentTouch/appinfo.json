@@ -1,6 +1,6 @@
 {
 	"id": "com.thewbman.ktorrenttouch",
-	"version": "0.1.6",
+	"version": "0.1.8",
 	"vendor": "thewbman",
 	"type": "web",
 	"main": "index.html",

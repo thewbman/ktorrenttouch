@@ -33,6 +33,7 @@ KTorrentTouch.appMenuModel = {
 	items: [
 		{label: $L("About"), command: 'do-aboutApp'},
 		{label: $L("Preferences"), command: 'do-prefsApp'},
+		{label: $L("Open in browser"), command: 'do-openBrowser'},
 		{label: $L("Help"), items: [
 			{label: $L("Help"), command: 'do-openHelp'},
 			{label: $L("Leave review"), command: 'do-leaveReview'},
@@ -41,6 +42,9 @@ KTorrentTouch.appMenuModel = {
 		}
 	]
 };
+
+
+KTorrentTouch.currentUrl = "http://www.google.com/";
 
 
 //Cookie for hosts/prefs
@@ -97,6 +101,10 @@ StageAssistant.prototype.handleCommand = function(event) {
 	  case 'do-prefsApp':
 			Mojo.Controller.stageController.pushScene("preferences");
        break;
+	   
+	  case 'do-openBrowser':
+			window.open(KTorrentTouch.currentUrl);
+		break;
 	   
 	  case 'do-openHelp':
 			Mojo.Controller.stageController.pushScene("help");
